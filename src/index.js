@@ -1,28 +1,11 @@
-const xlsx = require("xlsx");
-const fs = require("fs");
-const path = require("path");
+const { writePrefectureAndCities, writeSchools } = require("./functions");
 
-let wb = xlsx.readFile(path.resolve(__dirname, "schoolCode.xlsx"));
-// console.log(wb.Sheets["F1,F2,G1"]["F1171"]);
-// console.log(wb.Sheets["F1,F2,G1"]["H1171"]);
+async function main() {
+  await writeSchools("schools_01");
 
-const result = [];
-const sheetName = "F1,F2,G1";
+  await writeSchools("schools_02");
 
-for (let i = 2; i <= 1195; i++) {
-  // const zipcode =
-  //   wb.Sheets[sheetName]["H" + i]?.w || wb.Sheets[sheetName]["H" + i]?.v;
-
-  // if (isNaN(Number(zipcode))) continue;
-
-  const schoolName =
-    wb.Sheets[sheetName]["F" + i]?.w || wb.Sheets[sheetName]["F" + i]?.v;
-  // result[String(zipcode)] = String(schoolName);
-
-  result.push(String(schoolName));
+  await writePrefectureAndCities("prefecture_and_cities");
 }
 
-fs.writeFileSync(
-  path.resolve("result/", "schoolCode.json"),
-  JSON.stringify(result)
-);
+main();

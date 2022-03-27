@@ -1,0 +1,24 @@
+{
+  "dataFilesDirName": "data",
+  "writeFileDirName": "result",
+  "data": {
+    "schools_01": {
+      "writeFileName": "schools_01.json",
+      "rowBegin": 3,
+      "rowEnd": 32962,
+      "NGWord": ["幼稚園", "保育園", "こども園"]
+    },
+    "schools_02": {
+      "writeFileName": "schools_02.json",
+      "rowBegin": 2,
+      "rowEnd": 1195,
+      "NGWord": []
+    },
+    "prefecture_and_cities": {
+      "writeFileName": "prefecture_and_cities.json",
+      "rowBegin": 2,
+      "rowEnd": 1795,
+      "NGWord": []
+    }
+  }
+}
