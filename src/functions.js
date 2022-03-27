@@ -7,18 +7,38 @@ function isValid(NGWordsArray, target) {
   for (const NGWord of NGWordsArray) {
     if (target.indexOf(NGWord) !== -1) return false;
   }
+
   return true;
 }
 
+function getSchoolType(schoolName) {
+  const store = config.searchWordStore;
+
+  for (const [key, props] of Object.entries(store)) {
+    for (const values of props) {
+      if (schoolName.indexOf(values) !== -1) return key;
+    }
+  }
+
+  return "others";
+}
+
 async function writeSchools(fileName, fileType = "xlsx") {
+  //読み出し準備
   let wb = xlsx.readFile(
     path.resolve(__dirname, "../data/" + fileName + "." + fileType)
   );
+  const sheetName = wb.SheetNames[0];
   // console.log(wb.Sheets["F1,F2,G1"]["F1171"]);
   // console.log(wb.Sheets["F1,F2,G1"]["H1171"]);
-  const result = [];
-  const sheetName = wb.SheetNames[0];
 
+  //結果データ格納Object定義
+  const store = config.searchWordStore;
+  const result = {};
+  for (const key of Object.keys(store)) result[key] = [];
+  result.others = []; //オリジナルな学校名の対応がめんどくさいので、getSchoolTypeでマッチしなかった学校名用result
+
+  //処理開始
   for (
     let i = config.data[fileName].rowBegin;
     i <= config.data[fileName].rowEnd;
@@ -29,21 +49,35 @@ async function writeSchools(fileName, fileType = "xlsx") {
 
     // if (isNaN(Number(zipcode))) continue;
 
+    //学校名取り出し
     const schoolName =
       wb.Sheets[sheetName]["F" + i]?.w || wb.Sheets[sheetName]["F" + i]?.v;
-    // result[String(zipcode)] = String(schoolName);
 
-    isValid(config.data[fileName].NGWord, schoolName) &&
-      result.push(String(schoolName));
+    //学校種別取得
+    const schoolType = getSchoolType(schoolName);
+    // console.log(schoolName, schoolType);
+
+    //結果格納
+    result[schoolType].push(String(schoolName));
+    // console.log(result[schoolType]);
+
+    // isValid(config.data[fileName].NGWord, schoolName) &&
+    //   result[schoolType].push(String(schoolName));
   }
 
-  return await fs.writeFile(
-    path.resolve(
-      config.writeFileDirName + "/",
-      config.data[fileName].writeFileName
-    ),
-    JSON.stringify(result)
-  );
+  for (const key of Object.keys(result)) {
+    if (result[key].length > 0) {
+      const data = JSON.stringify(result[key]);
+      fs.writeFile(
+        path.resolve(
+          config.writeFileDirName + "/", //書き出しディレクトリ
+          key + ".json" //ファイル名の例： elementary
+          // config.data[fileName].writeFileName
+        ),
+        data
+      );
+    }
+  }
 }
 
 async function writePrefectureAndCities(fileName, fileType = "xlsx") {

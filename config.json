@@ -20,5 +20,14 @@
       "rowEnd": 1795,
       "NGWord": []
     }
+  },
+  "searchWordStore": {
+    "beforeElementary": ["幼稚園", "保育園", "こども園"],
+    "elementary": ["小学校"],
+    "juniorHigh": ["中学校"],
+    "high": ["高等学校"],
+    "technicalCollege": ["高等専門学校"],
+    "vocationalSchool": ["専修学校", "各種学校", "専門学校"],
+    "university": ["大学"]
   }
 }
